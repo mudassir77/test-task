@@ -9,6 +9,7 @@ import {
   DropdownLabel,
   DropdownMenu,
 } from '@/components/dropdown'
+import * as Headless from '@headlessui/react'
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from '@/components/navbar'
 import {
   Sidebar,
@@ -22,26 +23,23 @@ import {
   SidebarSpacer,
 } from '@/components/sidebar'
 import { SidebarLayout } from '@/components/sidebar-layout'
+import { APP_IMAGES } from '@/constants/images'
 import { getEvents } from '@/data'
 import {
   ArrowRightStartOnRectangleIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-  Cog8ToothIcon,
   LightBulbIcon,
-  PlusIcon,
   ShieldCheckIcon,
   UserCircleIcon,
 } from '@heroicons/react/16/solid'
-import {
-  Cog6ToothIcon,
-  HomeIcon,
-  QuestionMarkCircleIcon,
-  SparklesIcon,
-  Square2StackIcon,
-  TicketIcon,
-} from '@heroicons/react/20/solid'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { MdOutlineContentPaste } from 'react-icons/md'
+import { PiCaretCircleLeft, PiChartLine, PiChatsCircleLight, PiUsers } from 'react-icons/pi'
+import { RiArrowDropDownLine } from 'react-icons/ri'
+import { RxDashboard } from "react-icons/rx";
+import { useCallback, useState } from 'react'
+import { GoDotFill } from 'react-icons/go'
+
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   return (
@@ -77,6 +75,12 @@ export function ApplicationLayout({
 }) {
   let pathname = usePathname()
 
+  const [isContentExpanded, setIsContentExpanded] = useState(false)
+
+  const toggleContentExpansion = useCallback(() => {
+    setIsContentExpanded(!isContentExpanded)
+  }, [isContentExpanded, setIsContentExpanded])
+
   return (
     <SidebarLayout
       navbar={
@@ -94,92 +98,75 @@ export function ApplicationLayout({
       }
       sidebar={
         <Sidebar>
-          <SidebarHeader>
-            <Dropdown>
-              <DropdownButton as={SidebarItem}>
-                <Avatar src="/teams/catalyst.svg" />
-                <SidebarLabel>Catalyst</SidebarLabel>
-                <ChevronDownIcon />
-              </DropdownButton>
-              <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
-                <DropdownItem href="/settings">
-                  <Cog8ToothIcon />
-                  <DropdownLabel>Settings</DropdownLabel>
-                </DropdownItem>
-                <DropdownDivider />
-                <DropdownItem href="#">
-                  <Avatar slot="icon" src="/teams/catalyst.svg" />
-                  <DropdownLabel>Catalyst</DropdownLabel>
-                </DropdownItem>
-                <DropdownItem href="#">
-                  <Avatar slot="icon" initials="BE" className="bg-purple-500 text-white" />
-                  <DropdownLabel>Big Events</DropdownLabel>
-                </DropdownItem>
-                <DropdownDivider />
-                <DropdownItem href="#">
-                  <PlusIcon />
-                  <DropdownLabel>New team&hellip;</DropdownLabel>
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </SidebarHeader>
 
           <SidebarBody>
+            <div className="flex px-4 pt-5 justify-between">
+              <Image alt='' src={APP_IMAGES.logo} height={100} width={60} className='mb-10' />
+              <Headless.CloseButton as={NavbarItem} aria-label="Close navigation">
+                <PiCaretCircleLeft className='text-2xl font-thin cursor-pointer lg:hidden' />
+              </Headless.CloseButton>
+            </div>
+
+
             <SidebarSection>
               <SidebarItem href="/" current={pathname === '/'}>
-                <HomeIcon />
-                <SidebarLabel>Home</SidebarLabel>
+                <RxDashboard className='rotate-45 text-xl' />
+                <SidebarLabel>Dashboard</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/events" current={pathname.startsWith('/events')}>
-                <Square2StackIcon />
-                <SidebarLabel>Events</SidebarLabel>
+              <SidebarItem href="/users" current={pathname.startsWith('/users')}>
+                <PiUsers className='text-2xl' />
+                <SidebarLabel>Users</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
-                <TicketIcon />
-                <SidebarLabel>Orders</SidebarLabel>
+              <SidebarItem onClick={() => toggleContentExpansion()} className='flex w-full justify-between' current={pathname.startsWith('/content') || pathname.startsWith('/content/sales-stats') }>
+                <div className="flex gap-3">
+                  <MdOutlineContentPaste className='text-2xl' />
+                  <SidebarLabel>Content</SidebarLabel>
+                </div>
+                <RiArrowDropDownLine className='text-2xl flex-end' />
               </SidebarItem>
-              <SidebarItem href="/settings" current={pathname.startsWith('/settings')}>
-                <Cog6ToothIcon />
-                <SidebarLabel>Settings</SidebarLabel>
+
+              {isContentExpanded && (
+                <div>
+                  <SidebarItem className="flex gap-3" href="/content">
+                    <GoDotFill className='text-white' />
+                    <SidebarLabel>Overview</SidebarLabel>
+                  </SidebarItem>
+                  <SidebarItem className='flex gap-3' href="/content/sales-stats">
+                    <GoDotFill className='text-white' />
+                    <SidebarLabel>Sales Stats</SidebarLabel>
+                  </SidebarItem>
+                </div>
+              )}
+
+              <SidebarItem href="/support" current={pathname.startsWith('/support')}>
+                <PiChatsCircleLight className='text-2xl' />
+                <SidebarLabel>Support</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem className='flex w-full justify-between' href="/financial" current={pathname.startsWith('/financial')}>
+                <div className="flex gap-3">
+                  <PiChartLine className='text-2xl' />
+                  <SidebarLabel>Financial</SidebarLabel>
+                </div>
+                <RiArrowDropDownLine className='text-2xl flex-end' />
               </SidebarItem>
             </SidebarSection>
 
-            <SidebarSection className="max-lg:hidden">
-              <SidebarHeading>Upcoming Events</SidebarHeading>
-              {events.map((event) => (
-                <SidebarItem key={event.id} href={event.url}>
-                  {event.name}
-                </SidebarItem>
-              ))}
-            </SidebarSection>
 
             <SidebarSpacer />
 
-            <SidebarSection>
-              <SidebarItem href="#">
-                <QuestionMarkCircleIcon />
-                <SidebarLabel>Support</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="#">
-                <SparklesIcon />
-                <SidebarLabel>Changelog</SidebarLabel>
-              </SidebarItem>
-            </SidebarSection>
           </SidebarBody>
 
           <SidebarFooter className="max-lg:hidden">
             <Dropdown>
               <DropdownButton as={SidebarItem}>
                 <span className="flex min-w-0 items-center gap-3">
-                  <Avatar src="/users/erica.jpg" className="size-10" square alt="" />
+                  <div className="bg-white h-9 w-9 rounded-sm flex justify-center items-center p-1">
+                    <div className="h-full w-full text-primaryBlue flex justify-center items-center text-xl font-bold ">T</div>
+                  </div>
                   <span className="min-w-0">
-                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">Erica</span>
-                    <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
-                      erica@example.com
-                    </span>
+                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">Tran H.</span>
                   </span>
                 </span>
-                <ChevronUpIcon />
               </DropdownButton>
               <AccountDropdownMenu anchor="top start" />
             </Dropdown>

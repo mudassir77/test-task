@@ -17,7 +17,7 @@ export function SidebarHeader({ className, ...props }: React.ComponentPropsWitho
       {...props}
       className={clsx(
         className,
-        'flex flex-col border-b border-zinc-950/5 p-4 dark:border-white/5 [&>[data-slot=section]+[data-slot=section]]:mt-2.5'
+        'flex flex-col border-b bg-primaryBlue border-zinc-950/5 p-4 dark:border-white/5 [&>[data-slot=section]+[data-slot=section]]:mt-2.5'
       )}
     />
   )
@@ -29,7 +29,7 @@ export function SidebarBody({ className, ...props }: React.ComponentPropsWithout
       {...props}
       className={clsx(
         className,
-        'flex flex-1 flex-col overflow-y-auto p-4 [&>[data-slot=section]+[data-slot=section]]:mt-8'
+        'flex flex-1 flex-col bg-primaryBlue overflow-y-auto [&>[data-slot=section]+[data-slot=section]]:mt-8'
       )}
     />
   )
@@ -41,7 +41,7 @@ export function SidebarFooter({ className, ...props }: React.ComponentPropsWitho
       {...props}
       className={clsx(
         className,
-        'flex flex-col border-t border-zinc-950/5 p-4 dark:border-white/5 [&>[data-slot=section]+[data-slot=section]]:mt-2.5'
+        'flex flex-col border-t-2 border-white bg-primaryBlue p-4 dark:border-white/5 [&>[data-slot=section]+[data-slot=section]]:mt-2.5'
       )}
     />
   )
@@ -85,7 +85,8 @@ export const SidebarItem = forwardRef(function SidebarItem(
 ) {
   let classes = clsx(
     // Base
-    'flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-left text-base/6 font-medium text-zinc-950 sm:py-2 sm:text-sm/5',
+    'flex w-full items-center gap-3 px-6 py-2.5 text-left text-base/6 font-medium text-zinc-950 sm:py-2 sm:text-sm/5',
+    className,
     // Leading icon/icon-only
     'data-[slot=icon]:*:size-6 data-[slot=icon]:*:shrink-0 data-[slot=icon]:*:fill-zinc-500 sm:data-[slot=icon]:*:size-5',
     // Trailing icon (down chevron or similar)
@@ -96,6 +97,8 @@ export const SidebarItem = forwardRef(function SidebarItem(
     'data-[hover]:bg-zinc-950/5 data-[slot=icon]:*:data-[hover]:fill-zinc-950',
     // Active
     'data-[active]:bg-zinc-950/5 data-[slot=icon]:*:data-[active]:fill-zinc-950',
+    // current && 'bg-zinc-200 dark:bg-zinc-700',
+    current && 'bg-zinc-200 dark:bg-zinc-700',
     // Current
     'data-[slot=icon]:*:data-[current]:fill-zinc-950',
     // Dark mode
@@ -104,15 +107,8 @@ export const SidebarItem = forwardRef(function SidebarItem(
     'dark:data-[active]:bg-white/5 dark:data-[slot=icon]:*:data-[active]:fill-white',
     'dark:data-[slot=icon]:*:data-[current]:fill-white'
   )
-
   return (
     <span className={clsx(className, 'relative')}>
-      {current && (
-        <motion.span
-          layoutId="current-indicator"
-          className="absolute inset-y-2 -left-4 w-0.5 rounded-full bg-zinc-950 dark:bg-white"
-        />
-      )}
       {'href' in props ? (
         <Headless.CloseButton as={Fragment} ref={ref}>
           <Link className={classes} {...props} data-current={current ? 'true' : undefined}>
@@ -134,5 +130,5 @@ export const SidebarItem = forwardRef(function SidebarItem(
 })
 
 export function SidebarLabel({ className, ...props }: React.ComponentPropsWithoutRef<'span'>) {
-  return <span {...props} className={clsx(className, 'truncate')} />
+  return <span {...props} className={clsx(className, 'truncate text-base')} />
 }
