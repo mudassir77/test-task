@@ -89,7 +89,7 @@ export function ApplicationLayout({
           <NavbarSection>
             <Dropdown>
               <DropdownButton as={NavbarItem}>
-                <Avatar src="/users/erica.jpg" square />
+                {/* <Avatar src="/users/erica.jpg" square /> */}
               </DropdownButton>
               <AccountDropdownMenu anchor="bottom end" />
             </Dropdown>
