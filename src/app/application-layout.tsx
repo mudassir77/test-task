@@ -147,7 +147,6 @@ export function ApplicationLayout({
                   <PiChartLine className='text-2xl' />
                   <SidebarLabel>Financial</SidebarLabel>
                 </div>
-                <RiArrowDropDownLine className='text-2xl flex-end' />
               </SidebarItem>
             </SidebarSection>
 

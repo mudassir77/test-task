@@ -23,8 +23,8 @@ const GeneralInformation = () => {
                 <div className="flex flex-col gap-2">
                     <p className="font-bold text-base">Store</p>
                     <div className="text-black flex flex-col gap-2">
-                        {MUSIC_STORE.map((store) => (
-                            <div className="flex flex-col">
+                        {MUSIC_STORE.map((store, idx) => (
+                            <div key={idx} className="flex flex-col">
                                 <p className="text-bold cursor-pointer">{store.name}</p>
                                 <p className="text-gray-400">{store.details}</p>
                             </div>
